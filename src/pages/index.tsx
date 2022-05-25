@@ -11,13 +11,23 @@ export default function Home() {
     new Cliente('Pedro Teste', 28, '123456'),
   ]
 
+  function clienteSeleciona(clienteSelecao: Cliente) {
+    console.log(`Seleciona: ${clienteSelecao.nome}`)
+  }
+
+  function clienteExcluido(clienteExclui: Cliente) {
+    console.log(`Exclui: ${clienteExclui.nome}`)
+  }
+
   return (
     <div className={`
       flex h-screen justify-center items-center
       bg-gradient-to-r from-purple-500 via-gray-200 to-blue-600
     `}>
       <Layout titulo="Crud Simples">
-        <Tabela clientes={clienteTable} />
+        <Tabela clientes={clienteTable}
+          clienteSelecionado={clienteSeleciona}
+          clienteExcluir={clienteExcluido} />
       </Layout>
     </div>
   )

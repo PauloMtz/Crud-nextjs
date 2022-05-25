@@ -3,16 +3,20 @@ import { IconeEditar, IconeExcluir } from "./Icones"
 
 interface TabelaProps {
     clientes: Cliente[]
+    clienteSelecionado?: (cliente: Cliente) => void
+    clienteExcluir?: (cliente: Cliente) => void
 }
 
 export default function Tabela(props) {
+    const exibirAcoes = props.clienteSelecionado || props.clienteExcluir
+
     function renderizarCabecalho() {
         return (
             <tr>
                 <th className="p-4">#</th>
                 <th className="p-4">Nome</th>
                 <th className="p-4">Idade</th>
-                <th className="p-4">Opções</th>
+                {exibirAcoes ? <th className="p-4">Opções</th> : false}
             </tr>
         )
     }
@@ -26,7 +30,7 @@ export default function Tabela(props) {
                     <td className="p-4">{cliente.id}</td>
                     <td className="p-4">{cliente.nome}</td>
                     <td className="p-4">{cliente.idade}</td>
-                    {renderizarOpcoes(cliente)}
+                    {exibirAcoes ? renderizarOpcoes(cliente) : false}
                 </tr>
             )
         })
@@ -35,20 +39,28 @@ export default function Tabela(props) {
     function renderizarOpcoes(clienteOpcao: Cliente) {
         return (
             <td className="flex">
-                <button className={`
-                    flex justify-center items-center
-                    text-green-600 rounded-full p-2 m-2
-                    hover:bg-purple-50
-                `}>
-                    {IconeEditar}
-                </button>
-                <button className={`
-                    flex justify-center items-center
-                    text-red-500 rounded-full p-2 m-2
-                    hover:bg-purple-50
-                `}>
-                    {IconeExcluir}
-                </button>
+                {props.clienteSelecionado ? (
+                    <button 
+                        onClick={() => props.clienteSelecionado?.(clienteOpcao)} 
+                        className={`
+                        flex justify-center items-center
+                        text-green-600 rounded-full p-2 m-2
+                        hover:bg-purple-50
+                    `}>
+                        {IconeEditar}
+                    </button>
+                ) : false}
+                {props.clienteExcluir ? (
+                    <button
+                        onClick={() => props.clienteExcluir?.(clienteOpcao)}
+                        className={`
+                        flex justify-center items-center
+                        text-red-500 rounded-full p-2 m-2
+                        hover:bg-purple-50
+                    `}>
+                        {IconeExcluir}
+                    </button>
+                ) : false}
             </td>
         )
     }
