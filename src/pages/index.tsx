@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Botao from "../components/Botao";
 import Formulario from "../components/Formulario";
 import Layout from "../components/Layout";
@@ -21,19 +22,36 @@ export default function Home() {
     console.log(`Exclui: ${clienteExclui.nome}`)
   }
 
+  function salvarCliente(clienteSalvo: Cliente) {
+    console.log(`Gravou: ${clienteSalvo.nome}`)
+  }
+
+  const [visivel, setVisivel] = useState<'tabela' | 'form'>('tabela')
+
   return (
     <div className={`
       flex justify-center items-center h-screen
       bg-gradient-to-r from-purple-500 via-gray-200 to-blue-600
     `}>
       <Layout titulo="Crud Simples">
-        <div className="flex justify-end mr-2">
-          <Botao cor="green" classeNome="mb-4 mt-4">Novo Cliente</Botao>
-        </div>
-        {/*<Tabela clientes={clienteTable}
-          clienteSelecionado={clienteSeleciona}
-          clienteExcluir={clienteExcluido} />*/}
-          <Formulario cliente={clienteTable[1]} />
+        {visivel === 'tabela' ? (
+          <div className="ml-4 mr-4 mb-4">
+            <div className="flex justify-end">
+              <Botao cor="green" classeNome="mb-4 mt-4" 
+                CliqueAqui={() => setVisivel('form')}>Novo Cliente</Botao>
+            </div>
+            <Tabela clientes={clienteTable}
+              clienteSelecionado={clienteSeleciona}
+              clienteExcluir={clienteExcluido} />
+          </div>
+        ) : (
+          <div className="mt-4">
+            <Formulario 
+              cliente={clienteTable[1]}
+              clienteAlterado={salvarCliente}
+              cancelado={() => setVisivel('tabela')} />
+          </div>
+        )}
       </Layout>
     </div>
   )

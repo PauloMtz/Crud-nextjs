@@ -11,7 +11,9 @@ export default function Entrada(props: EntradaProps) {
     return (
         <div className={`flex flex-col mb-2 ${props.classeNomeEntrada}`}>
             <label className="mb-2 ml-2">{props.texto}</label>
-            <input type={props.tipo ?? 'text'} value={props.valor} 
+            <input 
+                type={props.tipo ?? 'text'} 
+                value={props.valor} 
                 readOnly={props.somenteLeitura}
                 onChange={e => props.valorAlterado?.(e.target.value)}
                 className={`
