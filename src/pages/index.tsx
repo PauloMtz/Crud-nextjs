@@ -7,6 +7,9 @@ import Cliente from "../model/Cliente";
 
 export default function Home() {
 
+  const [visivel, setVisivel] = useState<'tabela' | 'form'>('tabela')
+  const [cliente, setCliente] = useState<Cliente>(Cliente.novoCliente())
+
   const clienteTable = [
     new Cliente('Ana Teste', 34, '123'),
     new Cliente('Maria Teste', 24, '1234'),
@@ -16,17 +19,23 @@ export default function Home() {
 
   function clienteSeleciona(clienteSelecao: Cliente) {
     console.log(`Seleciona: ${clienteSelecao.nome}`)
+    setCliente(clienteSelecao)
+    setVisivel('form')
   }
 
   function clienteExcluido(clienteExclui: Cliente) {
     console.log(`Exclui: ${clienteExclui.nome}`)
   }
 
-  function salvarCliente(clienteSalvo: Cliente) {
-    console.log(`Gravou: ${clienteSalvo.nome}`)
+  function novoCliente() {
+    setCliente(Cliente.novoCliente())
+    setVisivel('form')
   }
 
-  const [visivel, setVisivel] = useState<'tabela' | 'form'>('tabela')
+  function salvarCliente(clienteSalvo: Cliente) {
+    console.log(`Gravou: ${clienteSalvo.nome}`)
+    setVisivel('tabela')
+  }
 
   return (
     <div className={`
@@ -38,7 +47,7 @@ export default function Home() {
           <div className="ml-4 mr-4 mb-4">
             <div className="flex justify-end">
               <Botao cor="green" classeNome="mb-4 mt-4" 
-                CliqueAqui={() => setVisivel('form')}>Novo Cliente</Botao>
+                CliqueAqui={novoCliente}>Novo Cliente</Botao>
             </div>
             <Tabela clientes={clienteTable}
               clienteSelecionado={clienteSeleciona}
@@ -47,7 +56,7 @@ export default function Home() {
         ) : (
           <div className="mt-4">
             <Formulario 
-              cliente={clienteTable[1]}
+              cliente={cliente}
               clienteAlterado={salvarCliente}
               cancelado={() => setVisivel('tabela')} />
           </div>
