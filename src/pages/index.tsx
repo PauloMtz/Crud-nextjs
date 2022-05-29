@@ -1,21 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Botao from "../components/Botao";
 import Formulario from "../components/Formulario";
 import Layout from "../components/Layout";
 import Tabela from "../components/Tabela";
+import ColecaoClientes from "../firebase/db/ColecaoClientes";
 import Cliente from "../model/Cliente";
+import ClienteRepository from "../model/ClienteRepository";
 
 export default function Home() {
 
+  const repository: ClienteRepository = new ColecaoClientes()
+
   const [visivel, setVisivel] = useState<'tabela' | 'form'>('tabela')
   const [cliente, setCliente] = useState<Cliente>(Cliente.novoCliente())
+  const [clientes, setClientes] = useState<Cliente[]>([])
 
-  const clienteTable = [
-    new Cliente('Ana Teste', 34, '123'),
-    new Cliente('Maria Teste', 24, '1234'),
-    new Cliente('José Teste', 37, '12345'),
-    new Cliente('Pedro Teste', 28, '123456'),
-  ]
+  useEffect(obterTodos, [])
+
+  function obterTodos() {
+    repository.listarTodos().then(clientes => {
+      setClientes(clientes)
+      setVisivel('tabela')
+    })
+  }
 
   function clienteSeleciona(clienteSelecao: Cliente) {
     console.log(`Seleciona: ${clienteSelecao.nome}`)
@@ -23,8 +30,9 @@ export default function Home() {
     setVisivel('form')
   }
 
-  function clienteExcluido(clienteExclui: Cliente) {
-    console.log(`Exclui: ${clienteExclui.nome}`)
+  async function clienteExcluido(clienteExclui: Cliente) {
+    await repository.excluir(clienteExclui)
+    obterTodos()
   }
 
   function novoCliente() {
@@ -32,9 +40,9 @@ export default function Home() {
     setVisivel('form')
   }
 
-  function salvarCliente(clienteSalvo: Cliente) {
-    console.log(`Gravou: ${clienteSalvo.nome}`)
-    setVisivel('tabela')
+  async function salvarCliente(clienteSalvo: Cliente) {
+    await repository.salvar(clienteSalvo)
+    obterTodos()
   }
 
   return (
@@ -49,7 +57,7 @@ export default function Home() {
               <Botao cor="green" classeNome="mb-4 mt-4" 
                 CliqueAqui={novoCliente}>Novo Cliente</Botao>
             </div>
-            <Tabela clientes={clienteTable}
+            <Tabela clientes={clientes}
               clienteSelecionado={clienteSeleciona}
               clienteExcluir={clienteExcluido} />
           </div>
